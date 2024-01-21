@@ -1,9 +1,12 @@
 import { Peer } from "peerjs";
+import hoverEffect from 'hover-effect'
 
 import {useEffect, useState} from "react";
 
 import './App.css'
 import io from 'socket.io-client'
+
+console.log(hoverEffect)
 
 const socket =  io.connect('https://randomvideocall.tech/')
 let peer = new Peer({
@@ -70,11 +73,13 @@ function App() {
     })
 
 
-    getUserMedia({ video: true, audio: false }, (stream) => {
-      document.querySelector('#user').srcObject = stream
-      document.querySelector('#user').addEventListener('loadedmetadata', () => {
-        document.querySelector('#user').play()
+    getUserMedia({ video: true, audio: true }, (stream) => {
+      document.querySelector('#anotherUser').srcObject = stream
+      document.querySelector('#anotherUser').addEventListener('loadedmetadata', () => {
+        document.querySelector('#anotherUser').play()
       })
+
+
       peer.on('call', function(call) {
 
         // Answer the call, providing our mediaStream
@@ -88,9 +93,9 @@ function App() {
           console.log('---------------CALL CLOSED---------------')
         })
         call.on('stream', function(remoteStream) {
-          document.querySelector('#anotherUser').srcObject = remoteStream
-          document.querySelector('#anotherUser').addEventListener('loadedmetadata', () => {
-            document.querySelector('#anotherUser').play()
+          document.querySelector('#user').srcObject = remoteStream
+          document.querySelector('#user').addEventListener('loadedmetadata', () => {
+            document.querySelector('#user').play()
           })
         });
       });
@@ -108,7 +113,7 @@ function App() {
 
   function connectToPeer(ANOTHER_PEER_ID) {
 
-    getUserMedia({ video: true, audio: false }, (stream) => {
+    getUserMedia({ video: true, audio: true  }, (stream) => {
       let call = peer.call(ANOTHER_PEER_ID, stream);
       //console.log(call)
       socket.on('close_stream', () => {
@@ -122,9 +127,9 @@ function App() {
       call.on('stream', function(remote_stream) {
         //console.log(call)
 
-        document.querySelector('#anotherUser').srcObject = remote_stream
-        document.querySelector('#anotherUser').addEventListener('loadedmetadata', () => {
-          document.querySelector('#anotherUser').play()
+        document.querySelector('#user').srcObject = remote_stream
+        document.querySelector('#user').addEventListener('loadedmetadata', () => {
+          document.querySelector('#user').play()
         })
       });
     });
@@ -147,13 +152,25 @@ function App() {
       })
     }
   }, [PEER, SOCKETID, ROOM_ID]);
+  //
+
+
+
 
   return (
       <div className="App">
+        <h1>ELSE</h1>
         <div id="user_container">
           <video id="user">
 
           </video>
+          <lord-icon
+              id="arrow"
+              src="https://cdn.lordicon.com/vduvxizq.json"
+              trigger="hover"
+              state="hover-ternd-flat-3"
+              onClick={() => change(PEER, SOCKETID, ROOM_ID)}>
+          </lord-icon>
           <div id="connected_container">
             <video id="anotherUser">
 
