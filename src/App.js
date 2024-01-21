@@ -1,4 +1,5 @@
-import {Peer} from "https://esm.sh/peerjs@1.5.2?bundle-deps"
+import { Peer } from "peerjs";
+
 import {useEffect, useState} from "react";
 
 import './App.css'
